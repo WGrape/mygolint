@@ -12,6 +12,8 @@ var MyAstAnalyzer = &analysis.Analyzer{
 	Run:  run,
 }
 
+// PrintWhatIsPass 打印一下pass是啥玩意
+// pass它包含了关于源代码分析过程中需要的信息和上下文。它被用作传递给分析器函数的参数，以便分析器能够访问到关于源代码的信息和上下文，例如文件的AST（抽象语法树）、token（词法分析器生成的标记）等等。
 func PrintWhatIsPass(pass *analysis.Pass) {
 
 	// 打印分析器的基本信息
@@ -98,6 +100,7 @@ func PrintWhatIsPass(pass *analysis.Pass) {
 	}
 
 	// 打印被分析的包对象的ResultOf信息
+	// ResultOf表示分析器依赖的其他分析器
 	fmt.Printf("\n\n打印被分析的包对象的ResultOf信息\n")
 	fmt.Printf("--------------------------------------------\n")
 	fmt.Printf("pass.ResultOf: %+v \n", pass.ResultOf)
@@ -118,9 +121,19 @@ func PrintWhatIsPass(pass *analysis.Pass) {
 	fmt.Printf("\n\n打印被分析的包对象的一些其他无分类的信息\n")
 	fmt.Printf("--------------------------------------------\n")
 	fmt.Printf("pass.String(): %+v \n", pass.String())
+	// TypesInfo：该属性是一个types.Info类型的指针，表示语法树的类型信息。在源代码分析过程中，分析器可以使用TypesInfo属性来查询关于变量、类型、方法等信息。
+	// TypesSizes：该属性是一个types.Sizes类型的值，表示计算类型大小的函数。在源代码分析过程中，如果需要计算类型的大小，分析器可以使用TypesSizes属性中的函数进行计算。
+	// TypeErrors：该属性是一个types.Error类型的切片，表示类型错误。只有当分析器使用Analyzer.RunDespiteErrors方法运行时，TypeErrors属性才会被填充。
+	// 如果分析器使用Analyzer.RunDespiteErrors方法运行，并且在分析过程中出现了类型错误，那么这些错误将被添加到TypeErrors切片中。在分析器完成分析后，可以使用这些错误来生成错误报告
+	fmt.Printf("pass.TypeErrors: %+v \n", pass.TypeErrors)
+	// 在源代码分析过程中，如果需要查询语法树中的类型信息，可以使用TypesInfo属性。例如，可以使用TypesInfo.TypeOf函数来获取一个表达式的类型
+	fmt.Printf("pass.TypesInfo: %+v \n", pass.TypesInfo)
+	// 如果需要计算某个类型的大小，可以使用TypesSizes属性中的函数。例如，可以使用TypesSizes.Size函数来计算一个类型的大小
+	fmt.Printf("pass.TypesSizes: %+v \n", pass.TypesSizes)
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
+	// 打印一下pass是啥玩意
 	PrintWhatIsPass(pass)
 
 	for _, f := range pass.Files {
