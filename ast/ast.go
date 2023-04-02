@@ -6,6 +6,7 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
+// MyAstAnalyzer 定义分析器
 var MyAstAnalyzer = &analysis.Analyzer{
 	Name: "MyAstAnalyzer",
 	Doc:  "This is my analyzer for AST testing",
