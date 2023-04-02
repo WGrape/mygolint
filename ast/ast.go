@@ -134,12 +134,43 @@ func PrintWhatIsPass(pass *analysis.Pass) {
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	// 打印一下pass是啥玩意
+	fmt.Printf("\n\n打印一下pass是啥玩意\n")
+	fmt.Printf("--------------------------------------------\n")
 	PrintWhatIsPass(pass)
 
+	// 循环分析器中解析到的所有文件
+	fmt.Printf("\n\n打印一下pass.Files中的AST节点\n")
+	fmt.Printf("--------------------------------------------\n")
 	for _, f := range pass.Files {
 		ast.Inspect(f, func(n ast.Node) bool {
+
+			fmt.Printf("node = %+v\n", n)
+
+			if node, ok := n.(*ast.File); ok {
+				fmt.Printf("ast.File: %v\n", node.Name)
+			}
+
+			// 标识符
+			if node, ok := n.(*ast.Ident); ok {
+				fmt.Printf("ast.Ident: %v\n", node.Name)
+			}
+
+			// 数组类型，包括数组长度和元素类型等
+			if node, ok := n.(*ast.ArrayType); ok {
+				fmt.Printf("ast.ArrayType: %v\n", node.Elt)
+			}
+
+			if node, ok := n.(*ast.AssignStmt); ok {
+				fmt.Printf("ast.AssignStmt: %v\n", node.Tok)
+			}
+
+			if node, ok := n.(*ast.BranchStmt); ok {
+				fmt.Printf("ast.AssignStmt: %v\n", node.Tok)
+			}
+
+			// 函数声明
 			if decl, ok := n.(*ast.FuncDecl); ok {
-				fmt.Printf("Function %q\n", decl.Name.Name)
+				fmt.Printf("ast.FuncDecl: %v, %+v\n", decl.Name.Name, decl.Recv)
 			}
 			return true
 		})
