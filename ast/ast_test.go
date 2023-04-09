@@ -9,11 +9,14 @@ import (
 )
 
 func TestMyAstAnalyzer(t *testing.T) {
+	var err error
+
 	// 解析源代码文件
 	fset := token.NewFileSet()
-	f, err := parser.ParseFile(fset, "ast.go", nil, parser.ParseComments)
-	if err != nil {
+	if GlobalF, err = parser.ParseFile(fset, "./testdata/testdata.go", nil, parser.ParseComments); err != nil {
 		log.Fatal(err)
+		return
 	}
-	ast.Walk(&visitor{}, f) // 遍历AST树
+
+	ast.Walk(&visitor{}, GlobalF) // 遍历AST树
 }
