@@ -1,4 +1,6 @@
 # mygolint
-This is my first golint tool for research.
+This is a golint tool for learning and research.
 
-- 项目案例 ：[bodyclose](https://github.com/timakin/bodyclose/tree/master/passes/bodyclose/testdata/src/a)
+## 参考
+
+- [bodyclose](https://github.com/timakin/bodyclose/tree/master/passes/bodyclose/testdata/src/a)
