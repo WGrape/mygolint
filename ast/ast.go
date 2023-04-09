@@ -4,6 +4,7 @@ import (
 	"fmt"
 	golib "github.com/WGrape/golib/string"
 	"go/ast"
+	"go/token"
 	"log"
 )
 
@@ -11,15 +12,18 @@ import (
 type visitor struct{}
 
 var GlobalF *ast.File
+var GlobalFset *token.FileSet
 
 func (v *visitor) Visit(node ast.Node) ast.Visitor {
-	// 打印节点类型和位置信息
-	if node != nil {
-		log.Printf("Visit: node = %v, pos = %v, end = %v\n", node, node.Pos(), node.End())
+	if node == nil {
+		return v
 	}
 
-	switch ident := node.(type) {
+	// 打印节点类型和位置信息
+	log.Printf("Visit: node = %v, pos = %v, end = %v\n", node, node.Pos(), node.End())
+
 	// 检查所有标识符
+	switch ident := node.(type) {
 	case *ast.Ident:
 		// 检查是否符合驼峰命名法
 		if !golib.IsCamelCase(ident.Name) {
