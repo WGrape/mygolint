@@ -2,7 +2,6 @@ package analyzer
 
 import (
 	"fmt"
-	"go/ast"
 	"golang.org/x/tools/go/analysis"
 )
 
@@ -62,41 +61,6 @@ func PrintWhatIsPass(pass *analysis.Pass) {
 		// 在go中每一个花括号都是一个作用域, 都会有一个连接上层作用域的outer指针
 
 		fmt.Printf("pass.Files: Name = %v, Doc = %v, Pos = %v, Imports = %v, Unresolved = %v, Comments = %v, Objects = %v, Outer = %v, Decls = %v\n", f.Name, f.Doc, f.Pos(), f.Imports, f.Unresolved, f.Comments, f.Scope.Objects, f.Scope.Outer, f.Decls)
-
-		fmt.Printf("\n\n打印一下pass.Files中每一个文件的AST节点\n")
-		fmt.Printf("--------------------------------------------\n")
-		ast.Inspect(f, func(n ast.Node) bool {
-
-			fmt.Printf("node = %+v\n", n)
-
-			if node, ok := n.(*ast.File); ok {
-				fmt.Printf("ast.File: %v\n", node.Name)
-			}
-
-			// 标识符
-			if node, ok := n.(*ast.Ident); ok {
-				fmt.Printf("ast.Ident: %v\n", node.Name)
-			}
-
-			// 数组类型，包括数组长度和元素类型等
-			if node, ok := n.(*ast.ArrayType); ok {
-				fmt.Printf("ast.ArrayType: %v\n", node.Elt)
-			}
-
-			if node, ok := n.(*ast.AssignStmt); ok {
-				fmt.Printf("ast.AssignStmt: %v\n", node.Tok)
-			}
-
-			if node, ok := n.(*ast.BranchStmt); ok {
-				fmt.Printf("ast.AssignStmt: %v\n", node.Tok)
-			}
-
-			// 函数声明
-			if decl, ok := n.(*ast.FuncDecl); ok {
-				fmt.Printf("ast.FuncDecl: %v, %+v\n", decl.Name.Name, decl.Recv)
-			}
-			return true
-		})
 
 		// 打印注释相关的信息
 		for _, commentGroup := range f.Comments {
