@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestMyAstAnalyzer(t *testing.T) {
+func TestAST(t *testing.T) {
 	var err error
 
 	// 解析源代码文件
