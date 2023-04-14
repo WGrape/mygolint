@@ -5,9 +5,9 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
-// MyAnalyzer 定义分析器
-var MyAnalyzer = &analysis.Analyzer{
-	Name: "MyAnalyzer",
+// DemoAnalyzer 定义分析器
+var DemoAnalyzer = &analysis.Analyzer{
+	Name: "DemoAnalyzer",
 	Doc:  "This is my analyzer for testing",
 	Run:  run,
 }
@@ -132,8 +132,8 @@ func PrintWhatIsPass(pass *analysis.Pass) {
 	fmt.Printf("pass.TypesSizes: %+v \n", pass.TypesSizes)
 }
 
-// run MyAnalyzer的入口函数
-// 运行MyAnalyzer的时候就会执行这个函数
+// run DemoAnalyzer的入口函数
+// 运行DemoAnalyzer的时候就会执行这个函数
 func run(pass *analysis.Pass) (interface{}, error) {
 	// 打印一下pass是啥玩意
 	fmt.Printf("\n\n打印一下pass是啥玩意\n")
