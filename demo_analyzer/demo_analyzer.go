@@ -2,6 +2,7 @@ package analyzer
 
 import (
 	"fmt"
+	"go/ast"
 	"golang.org/x/tools/go/analysis"
 )
 
@@ -39,7 +40,6 @@ func PrintWhatIsPass(pass *analysis.Pass) {
 		fmt.Printf("pass.Analyzer ResultType.String(): %+v \n", pass.Analyzer.ResultType.NumOut())
 		fmt.Printf("pass.Analyzer ResultType.String(): %+v \n", pass.Analyzer.ResultType.Key())
 		fmt.Printf("pass.Analyzer ResultType.String(): %+v \n", pass.Analyzer.ResultType.PkgPath())
-
 	}
 	fmt.Printf("pass.Analyzer RunDespiteErrors: %+v \n", pass.Analyzer.RunDespiteErrors)
 
@@ -59,7 +59,6 @@ func PrintWhatIsPass(pass *analysis.Pass) {
 		// Scope 结构体表示一个作用域（scope），它包含了一组声明（declaration）和一个指向外部作用域（outer scope）的指针。
 		// 外部作用域（outer scope）是指包含当前作用域的上一级作用域。例如，在一个函数内部定义的变量具有函数作用域，在这个函数的外部是无法访问这个变量的。但是，如果在函数内部嵌套了另一个函数，那么在内部函数中定义的变量就具有外部函数的作用域。因此，内部函数的作用域是包含在外部函数的作用域之内的。
 		// 在go中每一个花括号都是一个作用域, 都会有一个连接上层作用域的outer指针
-
 		fmt.Printf("pass.Files: Name = %v, Doc = %v, Pos = %v, Imports = %v, Unresolved = %v, Comments = %v, Objects = %v, Outer = %v, Decls = %v\n", f.Name, f.Doc, f.Pos(), f.Imports, f.Unresolved, f.Comments, f.Scope.Objects, f.Scope.Outer, f.Decls)
 
 		// 打印注释相关的信息
@@ -69,6 +68,49 @@ func PrintWhatIsPass(pass *analysis.Pass) {
 				fmt.Printf("Slash = %v, Text = %v\n", comment.Slash, comment.Text)
 			}
 		}
+
+		// 打印位置信息
+		// 适用于获取标识符所在的函数、文件等场景
+		ast.Inspect(f, func(n ast.Node) bool {
+			// 标识符
+			var (
+				ok   bool
+				node *ast.Ident
+			)
+			if node, ok = n.(*ast.Ident); !ok {
+				return true
+			}
+
+			var position = pass.Fset.Position(n.Pos())
+			fmt.Printf(
+				"-----node.Name = %v, node.String = %v, position.String = %v, position.Filename = %v, position.Offset = %v, position.Line = %v, position.Column = %v-----\n",
+				node.Name,
+				node.String(),
+				position.String(),
+				position.Filename,
+				position.Offset,
+				position.Line,
+				position.Column,
+			)
+			return true
+		})
+
+		ast.Inspect(f, func(n ast.Node) bool {
+			var (
+				ok    bool
+				ident *ast.Ident
+			)
+			if ident, ok = n.(*ast.Ident); !ok {
+				return true
+			}
+
+			identType := pass.TypesInfo.Uses[ident].Type()
+			identName := pass.TypesInfo.Uses[ident].Name()
+			identString := pass.TypesInfo.Uses[ident].String()
+			identPkg := pass.TypesInfo.Uses[ident].Pkg()
+			fmt.Printf("identType = %v\nidentName = %v\nidentString = %v\nidentPkg = %v\n", identType, identName, identString, identPkg)
+			return true
+		})
 	}
 
 	// 打印被分析的包信息
