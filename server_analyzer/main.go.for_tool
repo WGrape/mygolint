@@ -1,0 +1,12 @@
+package main
+
+import (
+	"flag"
+	"golang.org/x/tools/go/analysis/singlechecker"
+)
+
+var configFile = flag.String("configFile", "", "the path of config file")
+
+func main() {
+	singlechecker.Main(ServerAnalyzer)
+}
